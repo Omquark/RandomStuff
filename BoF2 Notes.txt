@@ -1,0 +1,64 @@
+BoF2 Cheats and others
+C2719580 - 1 Hit kill
+C2719780 - 1 Hit kill
+C3D2AAEA - Buy with no Gold
+C3D2ABEA - Buy with no Gold
+C3F7CCEA - Swch with no Gold
+C3F7CDEA - Swch with no Gold
+C0E22AEA - Last mob killed drops item
+C0E22BEA - Last mob killed drops item
+C0E22EEA - Item dropped is rare
+C0E22FEA - Item dropped is rare
+With the above codes, be careful. Enemies can leave un-dropables!
+C31973EA - Drawers always have items
+C31974EA - Drawers always have items
+C3274FEA - No random battles
+7E00D6 + 7E00D7 - The RNG numbers
+C3B450E8 - Break the Offense cap
+C3B45103 - Break the offense cap
+C3B455E8 - Break the offense cap
+C3B45603 - Break the offense cap
+7E006908 - Walk through walls
+7E12DE08 - Walk through walls
+With the walk through walls, it turns off clipping. Turn the code off to enter areas
+7E56953F - Have all shamans
+C4934D00 - Skip Queen of Tunlan Dungeon
+When you enter the queen of Tunlan, you will be immediately finished!
+	You can also set all of 7E5621 through 7E562E to 80, but this is faster.
+
+C3355B00 - Nina can call the great bird when leading the party before releasing the demons
+C3356300 - Nina can call the Great Bird after releasing the demons
+
+There appears to be an event reader of sorts at 7E12C1, this is almost always set to 2
+You can set this to other values to perform events, but it has to be unset to work correctly
+Here are what events I've found
+02 - Nothing
+04 - Starts an event when first meeting Granny
+06 - Shuffle first person to back of party(R button)
+8, 10 - Animation plays and freezes, may not freeze under some conditions
+0A, 0E - Check drawer, Looks like for a random item, I've found Chkn and 25Z
+12 - Drops down as if through a hole to new location
+14 - Nina saves the party from the hole animation
+16 - Go up steps to new location
+18 - Turn into the frog, swaps to 1A after completing
+1A - Party acts like the frog (Move two tile, hoping over the first, swim, etc). This will have funky sprites
+1C - Riding the whale, you get stuck on land
+1E - Rand rolling on the overworld, crash when you hit a wall
+20 - Sten Grabbing? Pulls you to a wall and freezes
+22 - Sten grabbing. Has some slight delay and pulls you over 2 tiles like sten grabbing a pole
+24 - Freezes
+26 - Finds item and asks to keep
+28 - Turn into the great bird
+2A - As the bird flying, crashes when you try to land
+2C - Recovery spring
+2E - Allows walk through walls, but crashes when you open the menu
+38 - Some text shows on screen with spell names, freezes
+All others I tested freeze, but may fade to black first. I only tested to 0x50
+
+There's another event reader of sorts at 7E0C8C, but it works differently
+7E0C9C Is part of the events holder, as is 8D, both appear to increment at times to signify you are a certain place in the story.
+Such that setting 9D to 09 will allow you to walk thgouh Mt. Fubi and rescue Suzy without fighting the harpy sisters,
+however, with Mt. Fubi skipped, you can;t get back, the rock never creates a path.
+Setting 0A will take Suzy back, and setting to 0B and 8E to 01, Bow will ask to go to sleep to skip to the next day.
+I haven't played with all the values or looked as the game progresses, so some of this may be inaccurate.
+If you play with it, be patient!
