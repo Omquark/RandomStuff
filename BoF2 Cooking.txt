@@ -1,0 +1,29 @@
+Data is read from 0x1CD0 through 0x1CCD and compared to 0xC3F998 in ROM, with X index
+The ROM index starts at the end C3:FA07 is the highest allowable, though data appears to through 0xFA0B
+There is also another table whose index would align with this which would cook the MoonDrop, but the index is out of reach
+The GoldBar is a special index, when 0x1CD0 is greater or equal to 0x60
+The first byte is read, and continues through the bytes until one of the values form the ROM bank are greater than the RAM
+So 0x1CD0 is checked against 0xFA07, then 0x1CEF against 0xFA06, if 0x1CD0 > 0xFA07, otherwise go to 0xFA03
+An index is kept at 0x1CC8 to track which index we're on
+Once an index is found which all values from 0x1CCD through 0x1CD0 are greater or equal to the comparison values, this almost is the 
+read index for the next table. If no value is found, you get Charcoal.
+Now this index we get is reduced by LSR * 2, which gives us the value we're looking for in the next table.
+Now, read starting from C3:595E + X, X starts at 1 until the number matches exactly the index we get.
+The index number we read is the item slot we'll get from cooking, with a chance of Charcoal!
+This result is stored in 7E:1CC3, this will only be the item you can get. Sometimes it fails and you get Charcoal.
+You cannot force write 7E:1CC3, it is also the highlighted item to ad to the ingredients
+Force writing may add the wrong ingredient?
+Sometimes you get more than 1, I haven't figured out how this works.
+With this process, the highest number on the list you can go is a Medicate, slot 0x17.
+As for how the game knows what to add to the RAM values, it's the same table
+
+Example: We cook 4 Charcoals, which gives us values 4, 0, 0, 4 for 7E:1CCD through 7E:1CD0 respectively
+Now we go through the table from C3:FA07 down until a 4 bit set of bytes is less or equal to our RAM values
+This will result in a read index of 0x0C, which is LSR * 2 to the final value 0x03
+Now, cycle through the values from the table at C3:F95E + X starting with X = 1 (So 0xF95F)
+thie gives us the read at index X = 02, which is the item slot of what we have a chance to cook.
+In the case of 4 Charcoals, we get a chance at a HelpBL.
+Sometimes you get more than 1, this is out of scope here.
+
+So if we cook only 2 Charcoals, it will give us the last possible index, which will point to the 0 index, so an Herb.
+LUA script to follow.
