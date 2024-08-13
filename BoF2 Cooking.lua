@@ -1,50 +1,76 @@
+--This script will tell you what item you will cook without actually needing to waste items.
+--There is always a chance for a charcoal, so save before the cook. If you get a charcoal, try again
+--There may be some cases which are not covered by this script, in which case, the item received
+--will not be what is shown, or a charcoal. If you consistently get charcoals and shouldn;t,
+--hte script is wrong and needs to covoer this use case
+
 function Run()
-  local cookValues;
-  local cookIndex = 0xC3FA07;
-  local currentCookedItemIndex = 0x00;
-  local cookItemBase = 0xC3F95E;
-  local currentItem = 0x00;
-  local itemName = "";
+  local recipeIndexBase = 0xC3F998; --Where the recipes start in the ROM
+  local ingredientBase = 0x7E1CCD;  --The ingredients in the RAM
+  local recipeIndexSize = 0x6F;     --How many recipes are in the recipe list
+  local resultItemSlot = 0x01; --Used to get the item slot to read the item name
+  local resultItemBaseAddress = 0xC3F95E; --The the result item lookup
+  local itemBaseAddress = 0xC70000; --The base address of the items
 
-  cookValues = {};
-  cookValues[0] = memory.readbyte(0X7E1CCD);
-  cookValues[1] = memory.readbyte(0X7E1CCE);
-  cookValues[2] = memory.readbyte(0X7E1CCF);
-  cookValues[3] = memory.readbyte(0X7E1CD0);
+  local itemName = ""; --Used to show the item name
 
-  for i = 1, 0x1B do
+  local currentRecipeResult; --The current recipe we will create by cooking
+
+  local i = recipeIndexBase + recipeIndexSize;
+  --Special condition for a GoldBar
+  if memory.readbyte(0x7E1CD0 >= 0x60) then
+    currentRecipeResult = 0x39;
+  end
+  
+  --Loop until we find a recipe which matches the conditions, all values in the ROM must be
+  -- less or equal to the RAM AND neither must be 0 ONLY when the other is not
+  while i >= recipeIndexBase and currentRecipeResult do
+    local foundRecipe = true;
     for j = 0, 3 do
-      local test = string.format("%04X", memory.readbyte(cookIndex - (i * 0x04) - j));
-      gui.text(0, j * 8, test);
-      test = string.format("%04X", cookIndex - (i * 0x04) - j);
-      gui.text(0, (j * 8) + 32, test);
-      if cookValues[j] >= memory.readbyte(cookIndex - (i * 0x04) - j) then
-        currentCookedItemIndex = i;
-        -- local test = string.format("%04X", memory.readbyte(cookIndex - (i * 0x04) - j));
-        local test = string.format("%04X", currentCookedItemIndex);
-        gui.text(0, 72, test);
+      --This is a negative condition, must be ROM < RAM and ROM == 0 XOR RAM == 0
+      if memory.readbyte(ingredientBase + 3 - j) < memory.readbyte(i - j) or
+          (memory.readbyte(ingredientBase + 3 - j) == 0 and memory.readbyte(i - j) ~= 0) or
+          (memory.readbyte(ingredientBase + 3 - j) ~= 0 and memory.readbyte(i - j) == 0)
+      then
+        foundRecipe = false;
         break;
       end
     end
-  end
-
-  for i = 0, 0x1B do
-    if memory.readbyte(cookItemBase) == currentCookedItemIndex then
-      currentItem = i;
-    end
-  end
-  if currentItem == 0x00 then
-    currentItem = 0x33;
-  end
-
-  for i = 0, 8 do
-    if memory.readbyte(0xC70000 + i) == 0x00 then
+    if foundRecipe == true then
+      --We found a recipe, so prepare the next step
       break;
     end
-    itemName = itemName .. string.char(memory.readbyte(0xC70000 + i));
+    i = i - 4;
   end
-  -- gui.text(0, 0, itemName);
+
+  --Divide the result by 4 and round down
+  currentRecipeResult = math.floor((i - recipeIndexBase) / 0x04);
+  while true do
+    --One item always give s a charcoal
+    if memory.readbyte(0X7E1CDD) <= 0x01 then --If one item is cooked
+      resultItemSlot = 0x33;
+      break;
+    end
+    local itemSlot = memory.readbyte(resultItemBaseAddress + resultItemSlot)
+    --We loop through to see if the table is the same as when we found, and break when we do
+    if itemSlot == currentRecipeResult then
+      break;
+    end
+    --A hard limit. Going beyone this would result in getting unpredictable items
+    if resultItemSlot >= 0x39 then
+      resultItemSlot = 0x33;
+      break;
+    end
+    resultItemSlot = resultItemSlot + 1;
+  end
+
+  --Now get the item name
+  for j = 0, 7 do
+    if memory.readbyte(itemBaseAddress + (resultItemSlot * 0x10) + j) == 0 then break end
+    itemName = itemName .. string.char(memory.readbyte(itemBaseAddress + (resultItemSlot * 0x10) + j));
+  end
+  --And print
+  gui.text(0, 0, "You will cook " .. itemName);
 end
 
-
-emu.registerbefore(Run);
+emu.registerbefore(Run); --Register the function to run before emmulating
