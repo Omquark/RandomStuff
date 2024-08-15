@@ -26,13 +26,9 @@ function Run()
   --Loop until we find a recipe which matches the conditions, all values in the ROM must be
   -- less or equal to the RAM AND neither must be 0 ONLY when the other is not
   while i >= recipeIndexBase and not currentRecipeResult do
-    -- if currentRecipeResult == 0x39 then
-    --   gui.text(0, 8, "Breaking because GoldBar");
-    --   break;
-    -- end
     local foundRecipe = true;
     for j = 0, 3 do
-      --This is a negative condition, must be ROM < RAM and ROM == 0 XOR RAM == 0
+      --This is a negative condition, must be ROM <= RAM and ROM == 0 XOR RAM == 0
       if memory.readbyte(ingredientBase + 3 - j) < memory.readbyte(i - j) or
           (memory.readbyte(ingredientBase + 3 - j) == 0 and memory.readbyte(i - j) ~= 0) or
           (memory.readbyte(ingredientBase + 3 - j) ~= 0 and memory.readbyte(i - j) == 0)
