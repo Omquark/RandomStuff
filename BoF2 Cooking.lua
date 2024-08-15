@@ -1,30 +1,35 @@
 --This script will tell you what item you will cook without actually needing to waste items.
 --There is always a chance for a charcoal, so save before the cook. If you get a charcoal, try again
 --There may be some cases which are not covered by this script, in which case, the item received
---will not be what is shown, or a charcoal. If you consistently get charcoals and shouldn;t,
---hte script is wrong and needs to covoer this use case
+--will not be what is shown, or a charcoal. If you consistently get charcoals and shouldn't,
+--the script is wrong and needs to cover this use case.
+--It will also not tell you how many you will get, so you might cook more than one for some recipes
 
 function Run()
-  local recipeIndexBase = 0xC3F998; --Where the recipes start in the ROM
-  local ingredientBase = 0x7E1CCD;  --The ingredients in the RAM
-  local recipeIndexSize = 0x6F;     --How many recipes are in the recipe list
-  local resultItemSlot = 0x01; --Used to get the item slot to read the item name
+  local recipeIndexBase = 0xC3F998;       --Where the recipes start in the ROM
+  local ingredientBase = 0x7E1CCD;        --The ingredients in the RAM
+  local recipeIndexSize = 0x6F;           --How many recipes are in the recipe list
+  local resultItemSlot = 0x01;            --Used to get the item slot to read the item name
   local resultItemBaseAddress = 0xC3F95E; --The the result item lookup
-  local itemBaseAddress = 0xC70000; --The base address of the items
+  local itemBaseAddress = 0xC70000;       --The base address of the items
 
-  local itemName = ""; --Used to show the item name
+  local itemName = "";                    --Used to show the item name
 
-  local currentRecipeResult; --The current recipe we will create by cooking
+  local currentRecipeResult;              --The current recipe we will create by cooking
 
   local i = recipeIndexBase + recipeIndexSize;
   --Special condition for a GoldBar
-  if memory.readbyte(0x7E1CD0 >= 0x60) then
+  if memory.readbyte(0x7E1CD0) >= 0x60 then
     currentRecipeResult = 0x39;
   end
-  
+
   --Loop until we find a recipe which matches the conditions, all values in the ROM must be
   -- less or equal to the RAM AND neither must be 0 ONLY when the other is not
-  while i >= recipeIndexBase and currentRecipeResult do
+  while i >= recipeIndexBase and not currentRecipeResult do
+    -- if currentRecipeResult == 0x39 then
+    --   gui.text(0, 8, "Breaking because GoldBar");
+    --   break;
+    -- end
     local foundRecipe = true;
     for j = 0, 3 do
       --This is a negative condition, must be ROM < RAM and ROM == 0 XOR RAM == 0
@@ -44,14 +49,21 @@ function Run()
   end
 
   --Divide the result by 4 and round down
-  currentRecipeResult = math.floor((i - recipeIndexBase) / 0x04);
+  if currentRecipeResult ~= 0x39 then
+    currentRecipeResult = math.floor((i - recipeIndexBase) / 0x04);
+  end
   while true do
+    local itemSlot;
+    if (currentRecipeResult == 0x39) then
+      resultItemSlot = currentRecipeResult;
+      break
+    end
     --One item always give s a charcoal
     if memory.readbyte(0X7E1CDD) <= 0x01 then --If one item is cooked
       resultItemSlot = 0x33;
       break;
     end
-    local itemSlot = memory.readbyte(resultItemBaseAddress + resultItemSlot)
+    itemSlot = memory.readbyte(resultItemBaseAddress + resultItemSlot)
     --We loop through to see if the table is the same as when we found, and break when we do
     if itemSlot == currentRecipeResult then
       break;
