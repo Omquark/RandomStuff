@@ -1,0 +1,46 @@
+Breath of Fire 2 Codes (PAR)
+Some PAR codes I made because I could while disassembling the ROM.
+Please note some codes have side effects.
+
+C2719580 + C2719780 - 1 Hit kill for non event battles, glitchless
+C3D2AAEA + C3D2ABEA - Buy without gold
+C3F7CCEA + C3F7CCEA - Swch without gold, underflows gold
+C0E22AEA + C0E22BEA - Last mob always drops items
+C0E22EEA + C0E22FEA - When getting an item, it is always the rare drop
+	NOTE: Be careful when using the previous codes together, as mobs can drop undroppable items (Tolen, Gold)
+C31973EA + C31974EA - You can always check drawers for the same item(s)
+7E006908 + 7E12DE08 - Walk through walls
+C05F7A80 - Chests always have items
+C3356300 - Nina can call the bird until the demons are released. Trying to sequence break could softlock/freeze the game
+C3355B00 - Nina can call the bird after the demons
+	NOTE: Combining these two codes means Nina always has the bird
+C3F6DBEA + C3F6DCEA - Items are half off when buying
+C326EDAD - Freeze time on the overworld, Timewarp spell still works
+7E502F14 - Donated 20 times to Namanda. Use this before going to Namanda to get the Earth Shaman
+C3E8F174 - You can cook MoonDrops in Township with a Cond.Up and 3 Frizbee
+7E55F2FF - Can take all items from both Tolen games
+7E55F300 - Can take items multiple times from both Tolen games
+C09220xx - Tolen Weapon 1 Modifier
+C0921Dxx - Tolen Weapon 1 Quantity modifier
+C09255xx - Tolen Weapon 2 Modifier
+C09252xx - Tolen Weapon 2 Quantity modifier
+C09278xx - Tolen Weapon 3 Modifier
+C09275xx - Tolen Weapon 3 Quantity modifier
+C0929Bxx -  Tolen Armor 1 Modifier
+C09298xx -  Tolen Armor 1 Quantity modifier
+C095E1xx - Tolen Weapon 4 Modifier
+C095DExx - Tolen Weapon 4 Quantity modifier
+C09616xx - Tolen Weapon 5 Modifier
+C09613xx - Tolen Weapon 5 Quantity modifier
+C09639xx -  Tolen Armor 2 Modifier
+C09636xx -  Tolen Armor 2 Quantity modifier
+C0965Cxx -  Tolen Armor 3 Modifier
+C09659xx -  Tolen Armor 3 Quantity modifier
+	NOTE: For the quantities, stackable items are 1 to 9, Weapons are 0x11, Armor is 0x21, Accessories (Etc Slot) are 0x01.
+7E55EBDE + 7E55EC7B + 7E55ED77 + 7E55EE03 - All non shop residents are in Township. Yes multiple residents in all houses.
+7E56DExx - Township house color from 00 to 03
+7E56DFxx - Window color from 0x00 to 0x0E, Use even values only. Odd values can cause gliitchy colors
+C24FD300 - DreamBR, SilverHT, and SacredSH always "Erases the spell" (Spells will do no damage with these equipped
+C338D380 - HP restores when walking, as if character has LifeBR or LifeAR on
+C338F10C + C338F50E + C338FB0C - AP will be restored instead of HP
+C3E384BF - Shamans can be united with more than one character at a time
